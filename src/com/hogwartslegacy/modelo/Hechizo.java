@@ -3,10 +3,10 @@ package com.hogwartslegacy.modelo;
 import java.util.Locale;
 
 public class Hechizo {
+
+    public static final int MAX_COSTE = 20;
     private String nombre;
     private int costeMana;
-
-
 
     public Hechizo() {
         this("", 0);
@@ -18,7 +18,7 @@ public class Hechizo {
 
     public Hechizo(String nombre, int costeMana) {
        setNombre(nombre);
-        this.costeMana = costeMana;
+       setCosteMana(costeMana);
     }
 
     public String getNombre() {
@@ -34,10 +34,14 @@ public class Hechizo {
     }
 
     public void setCosteMana(int costeMana) {
-        this.costeMana = costeMana;
+        if(costeMana < 0){
+            costeMana = 0;
+        }
+        this.costeMana = Math.min(costeMana, MAX_COSTE);
     }
 
-    public String lanzarHechizo(Object objetivo){
+    public String efecto(Object objetivo){
+
         return "Lanzando hechizo " + this.nombre;
     }
 

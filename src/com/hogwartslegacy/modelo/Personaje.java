@@ -2,6 +2,7 @@ package com.hogwartslegacy.modelo;
 
 public abstract class Personaje {
 
+    public static final int MAX_VIDA = 100;
     private String nombre;
     private int vida;
 
@@ -9,7 +10,7 @@ public abstract class Personaje {
     }
 
     public Personaje(String nombre, int vida) {
-        this.nombre = nombre.trim().toUpperCase();
+        setNombre(nombre);
         setVida(vida);
     }
 
@@ -18,7 +19,10 @@ public abstract class Personaje {
     }
 
     public void setNombre(String nombre) {
-        this.nombre = nombre;
+        if(nombre == null ){
+            return;
+        }
+        this.nombre = nombre.trim().toUpperCase();
     }
 
     public int getVida() {
@@ -26,10 +30,10 @@ public abstract class Personaje {
     }
 
     public void setVida(int vida) {
-        if(vida < 0 || vida > 100){
-            return;
+        if( vida > MAX_VIDA){
+            this.vida = MAX_VIDA;
         }
-        this.vida = vida;
+        else this.vida = Math.max(vida, 0);
     }
 
     @Override

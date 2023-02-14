@@ -1,15 +1,12 @@
 package com.hogwartslegacy.modelo;
 
+import java.util.Arrays;
 import java.util.Locale;
 
 public class Mago extends Personaje implements AccionesMago {
 
     public static int MAX_HECHIZOS = 10;
-
-
-    public static enum Casa {
-        GRYFFINDOR, HUFFLEPUFF, RAVENCLAW, SLYTHERIN, SIN_CASA
-    }
+    public static int MAX_MAGIA= 30;
 
     private Casa casa;
     private int magia;
@@ -20,15 +17,22 @@ public class Mago extends Personaje implements AccionesMago {
         this(nombre,vida,Casa.SIN_CASA, 0, new Varita());
     }
 
+    public Mago(Mago mago){
+        this(mago.getNombre(), mago.getVida(), mago.getCasa(), mago.getMagia(), mago.getVarita());
+        this.hechizos = new Hechizo[MAX_HECHIZOS];
+        for (int i = 0; i < MAX_HECHIZOS; i++) {
+            mago.getHechizos()[i] = new Hechizo();
+        }
+    }
     public Mago() {
-        this("mago",100,Casa.SIN_CASA, 0, new Varita());
+        this("",0,Casa.SIN_CASA, 0, new Varita());
     }
 
     public Mago(String nombre, int vida, Casa casa, int magia, Varita varita) {
         super(nombre,vida) ;
         this.casa = casa;
         setMagia(magia);
-        this.varita = varita;
+        setVarita(varita);
         this.hechizos = new Hechizo[MAX_HECHIZOS];
         for (int i = 0; i < MAX_HECHIZOS; i++) {
             hechizos[i] = new Hechizo();
@@ -54,7 +58,7 @@ public class Mago extends Personaje implements AccionesMago {
         for (int i = 0; i < MAX_HECHIZOS; i++) {
             if (hechizos[i].getNombre().equals(hechizo.trim().toUpperCase(Locale.ROOT))) {
                 if (hechizos[i].getCosteMana() <= magia) {
-                    System.out.println(hechizos[i].lanzarHechizo(objetivo));
+                    System.out.println(hechizos[i].efecto(objetivo));
                     magia -= hechizos[i].getCosteMana();
                     lanzado = true;
                 } else {
@@ -62,9 +66,7 @@ public class Mago extends Personaje implements AccionesMago {
                 }
             }
         }
-       if(!lanzado){
-           System.err.println("No conozco ese hechizo");
-       }
+
 
        return lanzado;
     }
@@ -93,7 +95,7 @@ public class Mago extends Personaje implements AccionesMago {
 
     @Override
     public boolean olvidarHechizo(Hechizo hechizo) {
-        boolean hechizoOlvidado = false;
+        boolean hechizoOlvidado;
         int indice = buscarHechizo(hechizo.getNombre());
         if(indice == -1){
             System.err.println("No conozco ese hechizo");
@@ -111,7 +113,9 @@ public class Mago extends Personaje implements AccionesMago {
     }
 
     public void setVarita(Varita varita) {
-        this.varita = varita;
+
+        if(varita != null)
+            this.varita = varita;
     }
 
     private int buscarHechizo(String hechizo) {
@@ -140,11 +144,10 @@ public class Mago extends Personaje implements AccionesMago {
     }
 
     public void setMagia(int magia) {
-       if(magia < 0 || magia > 100){
-          return;
+       if(magia < 0 ){
+          this.magia = 0;
        }
-
-       this.magia = magia;
+       else this.magia = Math.min(magia, MAX_MAGIA);
 
     }
 
@@ -155,6 +158,35 @@ public class Mago extends Personaje implements AccionesMago {
 
     @Override
     public String toString() {
-        return  getNombre() + " (pv:" + getVida()+",pm:"+magia+") "+casa;
+        return getNombre() +
+                " (pv:" +
+                getVida() +
+                ",pm:" +
+                getMagia() +
+                ") " +
+                casa;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Mago mago = (Mago) o;
+
+        if (magia != mago.magia) return false;
+        if (casa != mago.casa) return false;
+        if (varita != null ? !varita.equals(mago.varita) : mago.varita != null) return false;
+        // Probably incorrect - comparing Object[] arrays with Arrays.equals
+        return Arrays.equals(hechizos, mago.hechizos);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = casa != null ? casa.hashCode() : 0;
+        result = 31 * result + magia;
+        result = 31 * result + (varita != null ? varita.hashCode() : 0);
+        result = 31 * result + Arrays.hashCode(hechizos);
+        return result;
     }
 }
