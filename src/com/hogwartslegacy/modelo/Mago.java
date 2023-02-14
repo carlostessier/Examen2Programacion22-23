@@ -176,9 +176,9 @@ public class Mago extends Personaje implements AccionesMago {
 
         if (magia != mago.magia) return false;
         if (casa != mago.casa) return false;
-        if (varita != null ? !varita.equals(mago.varita) : mago.varita != null) return false;
+        return varita != null ? varita.equals(mago.varita) : mago.varita == null;
         // Probably incorrect - comparing Object[] arrays with Arrays.equals
-        return Arrays.equals(hechizos, mago.hechizos);
+       // return Arrays.equals(hechizos, mago.hechizos);
     }
 
     @Override
