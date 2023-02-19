@@ -19,7 +19,7 @@ public class Main {
         Varita varitaRoble = new Varita(TEJO,PLUMA_FENIX, 30, MAX_POW);
         Mago voldemort = new Mago("Voldemort", MAX_VIDA, SLYTHERIN, MAX_MAGIA, varitaRoble);
 
-        Hechizo crucio = new Hechizo("Crucio", 1) {
+        Hechizo crucio = new Hechizo("Crucio", 5) {
             @Override
             public String efecto(Object objetivo) {
                 if (objetivo instanceof Personaje) {
